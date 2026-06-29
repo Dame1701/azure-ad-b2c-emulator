@@ -15,13 +15,28 @@ is about making your *own* application authenticate against it instead of Azure 
 
 ## Contents
 
-1. [The mental model](#1-the-mental-model)
-2. [Identity: users, object ids and how logins resolve](#2-identity-users-object-ids-and-how-logins-resolve)
-3. [Running the emulator inside your cluster](#3-running-the-emulator-inside-your-cluster)
-4. [Adding an "emulated" environment to your apps](#4-adding-an-emulated-environment-to-your-apps)
-5. [Pointing each tier at the emulator](#5-pointing-each-tier-at-the-emulator)
-6. [Custom login / password-reset screens](#6-custom-login--password-reset-screens)
-7. [End-to-end setup checklist](#7-end-to-end-setup-checklist)
+- [Integration guide](#integration-guide)
+  - [Contents](#contents)
+  - [1. The mental model](#1-the-mental-model)
+  - [2. Identity: users, object ids and how logins resolve](#2-identity-users-object-ids-and-how-logins-resolve)
+    - [Machine-to-machine identities](#machine-to-machine-identities)
+  - [3. Running the emulator inside your cluster](#3-running-the-emulator-inside-your-cluster)
+    - [The two reachability planes](#the-two-reachability-planes)
+    - [TLS for the browser](#tls-for-the-browser)
+    - [Service mesh \& network policy](#service-mesh--network-policy)
+    - [Injecting your config and assets (don't bake them in)](#injecting-your-config-and-assets-dont-bake-them-in)
+    - [Getting the image onto the cluster](#getting-the-image-onto-the-cluster)
+  - [4. Adding an "emulated" environment to your apps](#4-adding-an-emulated-environment-to-your-apps)
+  - [5. Pointing each tier at the emulator](#5-pointing-each-tier-at-the-emulator)
+    - [Backend API (.NET / Microsoft.Identity.Web)](#backend-api-net--microsoftidentityweb)
+    - [Frontend SPA (MSAL.js)](#frontend-spa-msaljs)
+    - [Machine-to-machine daemons](#machine-to-machine-daemons)
+    - [Non-.NET backends](#non-net-backends)
+  - [6. Custom login / password-reset screens](#6-custom-login--password-reset-screens)
+    - [Branding via config](#branding-via-config)
+    - [The login template](#the-login-template)
+    - [The password-reset screen](#the-password-reset-screen)
+  - [7. End-to-end setup checklist](#7-end-to-end-setup-checklist)
 
 ---
 
