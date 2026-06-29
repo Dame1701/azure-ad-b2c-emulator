@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Convention for consumers: mount an appsettings.Local.json over the baked-in defaults to
 // supply your own tenant, clients, APIs and users. Scalars can also be set via Emulator__*
 // environment variables.
-builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+builder.Configuration.AddJsonFile("appsettings.Local.json", true, true);
 
 builder.Services.AddSingleton(sp =>
     sp.GetRequiredService<IConfiguration>().GetSection(EmulatorOptions.SectionName).Get<EmulatorOptions>()

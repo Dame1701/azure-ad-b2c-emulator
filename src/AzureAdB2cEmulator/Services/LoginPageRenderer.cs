@@ -16,6 +16,24 @@ namespace AzureAdB2cEmulator.Services;
 /// </summary>
 public sealed class LoginPageRenderer
 {
+
+    private const string FallbackTemplate = """
+                                            <!DOCTYPE html>
+                                            <html lang="en">
+                                            <head>
+                                              <meta charset="UTF-8">
+                                              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                              <title>{{Title}}</title>
+                                              <link href="{{StylesHref}}" rel="stylesheet">
+                                            </head>
+                                            <body>
+                                              <div class="container">
+                                                <div class="main-toolbar">{{Brand}}<div class="emulator-tag">{{Tag}}</div></div>
+                                                <div class="content"><div class="card">{{Body}}</div></div>
+                                              </div>
+                                            </body>
+                                            </html>
+                                            """;
     private static readonly HtmlEncoder Encoder = HtmlEncoder.Default;
 
     private readonly EmulatorOptions _options;
@@ -162,22 +180,4 @@ public sealed class LoginPageRenderer
             ? File.ReadAllText(_templatePath)
             : FallbackTemplate;
     }
-
-    private const string FallbackTemplate = """
-                                            <!DOCTYPE html>
-                                            <html lang="en">
-                                            <head>
-                                              <meta charset="UTF-8">
-                                              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                              <title>{{Title}}</title>
-                                              <link href="{{StylesHref}}" rel="stylesheet">
-                                            </head>
-                                            <body>
-                                              <div class="container">
-                                                <div class="main-toolbar">{{Brand}}<div class="emulator-tag">{{Tag}}</div></div>
-                                                <div class="content"><div class="card">{{Body}}</div></div>
-                                              </div>
-                                            </body>
-                                            </html>
-                                            """;
 }
