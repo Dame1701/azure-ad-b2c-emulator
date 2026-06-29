@@ -139,6 +139,22 @@ There's no special "admin" flag — anything app-specific is just a claim. Put y
 attributes (e.g. `extension_IsAdmin`) in a user's `Claims` map and they're emitted verbatim
 on that user's tokens, exactly as B2C would.
 
+### Changing the port
+
+`8080` is just the default — nothing in the code is bound to it. Two independent levers, no
+rebuild required:
+
+- **Host port:** change the mapping, e.g. `docker run -p 9000:8080 …` (or the Service /
+  NodePort in Kubernetes). The container still listens on 8080.
+- **Container listen port:** override the standard ASP.NET Core variable, e.g.
+  `-e ASPNETCORE_URLS=http://+:9000` (the `EXPOSE 8080` in the Dockerfile is only metadata).
+
+The **one thing that must agree** is `Emulator:PublicBaseUrl` — it's the token issuer, so set
+it to the externally visible URL **including the port the browser actually uses** (e.g.
+`http://localhost:9000`). The discovery endpoints are derived from the request host, so they
+adapt automatically; only the fixed issuer needs telling. Remember to point your apps'
+authority / `ValidIssuer` at the new URL too.
+
 ---
 
 ## Theming
