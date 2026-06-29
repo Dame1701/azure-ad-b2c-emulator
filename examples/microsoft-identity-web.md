@@ -41,7 +41,7 @@ if (builder.Environment.IsDevelopment())
             // Must equal the emulator's PublicBaseUrl + TenantId exactly (here PublicBaseUrl
             // is https://localhost:8080 — use http only if that's how you set PublicBaseUrl).
             o.TokenValidationParameters.ValidIssuer =
-                "https://localhost:8080/11111111-1111-1111-1111-111111111111/v2.0/";
+                "https://localhost:8080/<TenantId>/v2.0/";   // your real tenant id
         });
 }
 ```

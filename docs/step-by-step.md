@@ -6,8 +6,14 @@ way a typical Kubernetes/kind setup does it.
 
 This is the **tutorial**; for the *why* behind each step see the
 [integration guide](integration-guide.md), and for the exact config swaps see
-[config-mapping.md](../examples/config-mapping.md). Example ids below are consistent with that
-mapping doc (API `2222…`, SPA `3333…`, daemon `4444…`, tenant `1111…`).
+[config-mapping.md](../examples/config-mapping.md).
+
+> **You reuse your existing ids — you don't invent any.** Wherever you see a `<…>` placeholder
+> below (`<TenantId>`, `<ApiClientId>`, `<DaemonClientId>`, `<SpaClientId>`, `<TenantDomain>`),
+> substitute the **real value you already use** with Azure AD B2C — including your real tenant
+> id. The emulator config is just a restatement of your current app registrations. See the
+> [config-mapping placeholders](../examples/config-mapping.md#placeholders-used-below) for what
+> each one is.
 
 > Just want to kick the tyres with no app? `docker run` the image — see the
 > [README quick start](../README.md#quick-start). This guide is for wiring it into *your* stack.
@@ -43,12 +49,12 @@ it issues must line up with your user store.
 
 From your existing Azure AD B2C setup (or `config-mapping.md` if starting fresh):
 
-| Need | Example |
+| Need | Placeholder |
 | --- | --- |
-| Tenant domain + tenant id | `yourtenant.onmicrosoft.com` / `1111…` |
-| API app registration client id (the token **audience**) | `2222…` |
-| API App ID URI + delegated scope | `https://yourtenant.onmicrosoft.com/api` + `access_as_user` |
-| Daemon (M2M) client id(s), if any | `4444…` |
+| Tenant domain + tenant id | `<TenantDomain>` / `<TenantId>` |
+| API app registration client id (the token **audience**) | `<ApiClientId>` |
+| API App ID URI + delegated scope | `https://<TenantDomain>/api` + `access_as_user` |
+| Daemon (M2M) client id(s), if any | `<DaemonClientId>` |
 | Sign-in policy name | `B2C_1A_SIGNIN` |
 
 **Checkpoint:** you can fill in every row above.
@@ -62,18 +68,19 @@ Create `appsettings.json` for the emulator from Steps 1–2:
 ```jsonc
 {
   "Emulator": {
-    "Tenant":   "yourtenant.onmicrosoft.com",
-    "TenantId": "11111111-1111-1111-1111-111111111111",
+    "PublicBaseUrl": "https://localhost:8080",       // browser URL (or Emulator__PublicBaseUrl env)
+    "Tenant":   "<TenantDomain>",
+    "TenantId": "<TenantId>",                         // your REAL Azure tenant id — reuse it
     "Branding": { "ProductName": "Acme", "EmulatorTag": "Azure AD B2C Emulator",
                   "LogoPath": "/assets/logo.png" },
     "Apis": [
-      { "Audience": "22222222-2222-2222-2222-222222222222",
-        "AppIdUri": "https://yourtenant.onmicrosoft.com/api",
+      { "Audience": "<ApiClientId>",
+        "AppIdUri": "https://<TenantDomain>/api",
         "Scopes":   [ "access_as_user" ] }
     ],
     "Clients": [
-      { "ClientId": "44444444-4444-4444-4444-444444444444", "Secret": "",
-        "Audience": "22222222-2222-2222-2222-222222222222", "Scopes": [ "system.access" ] }
+      { "ClientId": "<DaemonClientId>", "Secret": "",
+        "Audience": "<ApiClientId>", "Scopes": [ "system.access" ] }
     ],
     "Users": [
       { "ObjectId": "<object-id-from-step-1>", "Email": "dev@example.com",
@@ -187,7 +194,7 @@ NodePort, or an ingress). Then verify:
 
 ```bash
 kubectl rollout status deploy/auth-emulator
-curl -sk https://localhost:8080/yourtenant.onmicrosoft.com/B2C_1A_SIGNIN/v2.0/.well-known/openid-configuration
+curl -sk https://localhost:8080/<TenantDomain>/B2C_1A_SIGNIN/v2.0/.well-known/openid-configuration
 ```
 
 **Checkpoint:** the discovery JSON comes back, and its `issuer` is your `PublicBaseUrl` value.
@@ -204,10 +211,10 @@ Add a dedicated environment so production config is untouched. For each service:
    {
      "AzureAdB2C": {
        "Instance": "http://auth-emulator:8080/",          // in-cluster authority (http)
-       "Domain": "yourtenant.onmicrosoft.com",
-       "ClientId": "22222222-2222-2222-2222-222222222222", // unchanged (= Apis[].Audience)
+       "Domain": "<TenantDomain>",
+       "ClientId": "<ApiClientId>",                        // unchanged (= Apis[].Audience)
        "SignUpSignInPolicyId": "B2C_1A_SIGNIN",
-       "ValidIssuer": "https://localhost:8080/11111111-1111-1111-1111-111111111111/v2.0/",
+       "ValidIssuer": "https://localhost:8080/<TenantId>/v2.0/",  // PublicBaseUrl + TenantId
        "RequireHttpsMetadata": false
      }
    }
@@ -227,8 +234,8 @@ In your local MSAL config:
 
 ```jsonc
 "auth": {
-  "clientId":         "33333333-3333-3333-3333-333333333333",
-  "authority":        "https://localhost:8080/yourtenant.onmicrosoft.com/B2C_1A_SIGNIN",
+  "clientId":         "<SpaClientId>",
+  "authority":        "https://localhost:8080/<TenantDomain>/B2C_1A_SIGNIN",
   "knownAuthorities": [ "localhost:8080" ]
 }
 ```
@@ -239,7 +246,7 @@ In your local MSAL config:
 
 ## Step 9 — Point your daemons at it (if any)
 
-Set each daemon's token authority to `http://auth-emulator:8080/yourtenant.onmicrosoft.com/B2C_1A_SIGNIN`,
+Set each daemon's token authority to `http://auth-emulator:8080/<TenantDomain>/B2C_1A_SIGNIN`,
 keep its `ClientId` = `Clients[].ClientId`, and any secret (a blank `Secret` accepts anything).
 
 **Checkpoint:** a daemon `client_credentials` call returns a token with the configured scope.
