@@ -58,6 +58,10 @@ snippets:
 The most common trap, for .NET specifically, is Microsoft.Identity.Web rejecting the
 emulator's issuer with `IDX40001` — the .NET guide shows the two-line fix.
 
+For a full walkthrough of wiring the emulator into a real application stack — the identity
+model, running it in a Kubernetes/kind cluster, adding a dedicated "emulated" environment, and
+mounting custom login screens — see the **[Integration guide](docs/integration-guide.md)**.
+
 ---
 
 ## Configuration
