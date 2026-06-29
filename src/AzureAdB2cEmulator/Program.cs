@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Part of azure-adb2c-emulator: a local stand-in for Azure AD B2C.
+// Part of azure-ad-b2c-emulator: a local stand-in for Azure AD B2C.
 
 using System.Security.Cryptography;
 using System.Text;

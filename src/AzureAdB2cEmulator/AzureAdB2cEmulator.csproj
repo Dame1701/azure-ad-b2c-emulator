@@ -12,7 +12,7 @@
         <RootNamespace>AzureAdB2cEmulator</RootNamespace>
         <AssemblyName>AzureAdB2cEmulator</AssemblyName>
         <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
-        <UserSecretsId>azure-adb2c-emulator</UserSecretsId>
+        <UserSecretsId>azure-ad-b2c-emulator</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>

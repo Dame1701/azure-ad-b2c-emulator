@@ -1,4 +1,4 @@
-# azure-adb2c-emulator
+# azure-ad-b2c-emulator
 
 A small, **standalone** OpenID Connect provider that stands in for **Azure AD B2C** so you
 can run your stack locally without an Azure tenant or network access. It serves a B2C-shaped
@@ -34,7 +34,7 @@ needed:
 ```bash
 docker run -p 8080:8080 \
   -e Emulator__PublicBaseUrl=http://localhost:8080 \
-  ghcr.io/OWNER/azure-adb2c-emulator:latest
+  ghcr.io/OWNER/azure-ad-b2c-emulator:latest
 ```
 
 Visit <http://localhost:8080/> for a status page. The sample users are `admin@example.com`
@@ -194,7 +194,7 @@ dotnet run --project src/AzureAdB2cEmulator
 Build the image locally:
 
 ```bash
-docker build -t azure-adb2c-emulator:dev .
+docker build -t azure-ad-b2c-emulator:dev .
 ```
 
 ---
