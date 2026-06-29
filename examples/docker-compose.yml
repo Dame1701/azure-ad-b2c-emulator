@@ -1,0 +1,23 @@
+# Minimal docker-compose for the Azure AD B2C emulator.
+#
+#   docker compose -f examples/docker-compose.yml up
+#
+# Out of the box this serves a working emulator with the sample tenant/users baked into the
+# image. To use your own tenant, clients and users, uncomment the appsettings.Local.json
+# mount below and edit examples/appsettings.Local.example.json.
+
+services:
+  auth-emulator:
+    image: ghcr.io/OWNER/azure-adb2c-emulator:latest
+    ports:
+      - "8080:8080"
+    environment:
+      # The issuer baked into every token. Must be the URL your app/browser uses.
+      - Emulator__PublicBaseUrl=http://localhost:8080
+    # volumes:
+    #   # Your tenant/clients/users (overrides the baked-in sample defaults).
+    #   - ./appsettings.Local.example.json:/app/appsettings.Local.json:ro
+    #   # Optional theming - mount your own stylesheet / logo / page template.
+    #   - ./my-styles.css:/app/wwwroot/assets/styles.css:ro
+    #   - ./my-logo.png:/app/wwwroot/assets/logo.png:ro
+    #   - ./my-login-layout.html:/app/wwwroot/templates/login-layout.html:ro

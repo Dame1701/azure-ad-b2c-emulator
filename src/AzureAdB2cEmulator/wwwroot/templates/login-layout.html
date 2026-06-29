@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<!--
+  Login page layout for the Azure AD B2C emulator.
+
+  Placeholders substituted at runtime:
+    {{Title}}      page <title> ("<ProductName> - Sign-in")
+    {{StylesHref}} path to the stylesheet (/assets/styles.css)
+    {{Brand}}      the brand element (text wordmark, or logo if Branding.LogoPath is set)
+    {{Tag}}        the small label next to the brand (Branding.EmulatorTag)
+    {{Body}}       the rendered card contents (form fields + developer quick-pick)
+
+  Mount your own copy of this file over wwwroot/templates/login-layout.html to fully
+  customise the page chrome without rebuilding the image.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>{{Title}}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link href="{{StylesHref}}" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="main-toolbar">
+      {{Brand}}
+      <div class="emulator-tag">{{Tag}}</div>
+    </div>
+    <div class="content">
+      <div class="card">
+        {{Body}}
+      </div>
+    </div>
+  </div>
+</body>
+</html>

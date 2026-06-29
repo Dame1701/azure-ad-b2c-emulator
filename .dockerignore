@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+**/signing-key.json
+**/appsettings.Local.json
+Dockerfile
+.dockerignore
+.gitignore
+.git/
+.github/
+.idea/
+README.md
+CONTRIBUTING.md
+examples/

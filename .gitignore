@@ -1,0 +1,13 @@
+bin/
+obj/
+
+# Generated RSA signing key (contains a private key) - regenerated on first run.
+signing-key.json
+
+# Local config overrides - never commit your real tenant/users.
+**/appsettings.Local.json
+
+# IDE
+.idea/
+.vs/
+*.user

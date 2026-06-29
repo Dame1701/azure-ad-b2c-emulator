@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <!-- ============================================================================ -->
+    <!-- Standalone local Azure AD B2C emulator. Deliberately self-contained: a small  -->
+    <!-- OpenID Connect provider that stands in for Azure AD B2C for local development. -->
+    <!-- ============================================================================ -->
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <RootNamespace>AzureAdB2cEmulator</RootNamespace>
+        <AssemblyName>AzureAdB2cEmulator</AssemblyName>
+        <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+        <UserSecretsId>azure-adb2c-emulator</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.3.0"/>
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.3.0"/>
+    </ItemGroup>
+
+</Project>
