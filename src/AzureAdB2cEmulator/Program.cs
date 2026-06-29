@@ -31,6 +31,17 @@ var app = builder.Build();
 var options = app.Services.GetRequiredService<EmulatorOptions>();
 var sessionCookie = options.SessionCookieName;
 
+var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Emulator");
+startupLogger.LogInformation(
+    "Emulator ready: issuer {Issuer}; {UserCount} interactive user(s), {ClientCount} client(s), {ApiCount} API(s).",
+    options.Issuer, options.Users.Count, options.Clients.Count, options.Apis.Count);
+if (options.Users.Count == 0)
+{
+    startupLogger.LogWarning(
+        "0 interactive users configured - interactive login is disabled (any email will be rejected). " +
+        "Add entries under Emulator:Users to enable sign-in. Machine-to-machine (client_credentials) is unaffected.");
+}
+
 app.UseCors();
 app.UseStaticFiles();
 
