@@ -125,6 +125,12 @@ For a Kubernetes/kind setup the emulator runs as a normal **Deployment + Service
 single most important concept is that **the browser and your pods reach it on different
 addresses** — but every token must carry the **same issuer**.
 
+> **Run it as a single replica (`replicas: 1`).** The signing key and the authorization-code /
+> refresh-token stores are per-pod and in-memory, so scaling the emulator beyond one replica
+> breaks token validation and the code exchange intermittently. Many *application* pods sharing
+> the one emulator is fine; the emulator itself must not be scaled. See the README's
+> [Limitations](../README.md#limitations) for the full reasoning.
+
 ### The two reachability planes
 
 | Caller | Reaches the emulator at | Why |

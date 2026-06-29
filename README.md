@@ -21,6 +21,7 @@ known email. Never run it in production.
 - [Configuration](#configuration)
 - [Theming](#theming)
 - [How it works](#how-it-works)
+- [Limitations](#limitations)
 - [Run from source](#run-from-source)
 - [Troubleshooting](#troubleshooting)
 
@@ -182,6 +183,36 @@ cluster can't use a `localhost` URL. The emulator squares this:
 An RSA key is generated on first run and persisted to `signing-key.json` so the JWKS (and
 previously issued tokens) survive restarts. In an ephemeral container a fresh key is generated
 each start, which is fine — tokens are short-lived.
+
+---
+
+## Limitations
+
+This is a **development convenience**, not a B2C replacement. Know what you're trading away:
+
+- **No security. Development only.** No password is checked — any password is accepted for a
+  configured email. It is not hardened and must never be exposed beyond local dev.
+- **Single replica only — do not scale it.** The signing key is generated per-pod, and the
+  authorization-code / refresh-token stores are in-memory per-pod. Running more than one
+  emulator replica behind a Service causes intermittent failures: tokens signed by one replica
+  fail JWKS validation against another's key, and an auth code issued by one replica can't be
+  redeemed at another. Keep `replicas: 1`. (Multiple *application* pods sharing the one
+  emulator is fine — this is only about the emulator's own replica count.)
+- **State is in-memory and ephemeral.** Restarting the emulator regenerates the signing key
+  (on an ephemeral container filesystem) and drops all in-flight auth codes, refresh tokens and
+  sessions. Previously issued tokens then fail validation until clients re-authenticate and
+  backends refetch JWKS. Fine day-to-day (tokens are short-lived), but a restart ≈ everyone
+  signs in again.
+- **It mimics the token shape, not B2C's behaviour.** It reproduces the discovery/JWKS/token
+  endpoints, the three grants and the B2C claim shape — but it does **not** execute B2C user
+  flows or custom (IEF) policies, MFA, email/password reset, consent, or token revocation. The
+  policy name is only inspected for `PASSWORDRESET`; the policy logic itself isn't run. So it
+  won't catch bugs that depend on real B2C policy behaviour.
+- **You own identity sync.** The object ids you configure must keep matching your user store;
+  drift shows up as "user authenticates but isn't found".
+
+For the flows it does cover, tokens validate exactly as real B2C ones — which is what makes it
+useful. Just don't mistake it for a conformance or security test of your Azure setup.
 
 ---
 
