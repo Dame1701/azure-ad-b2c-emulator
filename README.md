@@ -34,7 +34,7 @@ needed:
 ```bash
 docker run -p 8080:8080 \
   -e Emulator__PublicBaseUrl=http://localhost:8080 \
-  ghcr.io/OWNER/azure-ad-b2c-emulator:latest
+  ghcr.io/dame1701/azure-ad-b2c-emulator:latest
 ```
 
 Visit <http://localhost:8080/> for a status page. The sample users are `admin@example.com`

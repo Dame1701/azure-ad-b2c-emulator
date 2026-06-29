@@ -8,7 +8,7 @@
 
 services:
   auth-emulator:
-    image: ghcr.io/OWNER/azure-ad-b2c-emulator:latest
+    image: ghcr.io/dame1701/azure-ad-b2c-emulator:latest
     ports:
       - "8080:8080"
     environment:
