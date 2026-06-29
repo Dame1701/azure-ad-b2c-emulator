@@ -8,6 +8,9 @@ is generic; substitute your own tenant, client ids and user store.
 If you just want to run the emulator standalone, see the [README](../README.md). This guide
 is about making your *own* application authenticate against it instead of Azure AD B2C.
 
+> **Prefer a do-this-in-order tutorial?** See [step-by-step.md](step-by-step.md) for the
+> ordered setup recipe; this guide is the reference behind it.
+
 ---
 
 ## Contents

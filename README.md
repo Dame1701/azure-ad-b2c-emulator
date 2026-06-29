@@ -62,9 +62,12 @@ emulator's issuer with `IDX40001` — the .NET guide shows the two-line fix. If 
 which client id / audience maps to which emulator setting, start with the
 [config-mapping](examples/config-mapping.md) before/after walkthrough.
 
-For a full walkthrough of wiring the emulator into a real application stack — the identity
-model, running it in a Kubernetes/kind cluster, adding a dedicated "emulated" environment, and
-mounting custom login screens — see the **[Integration guide](docs/integration-guide.md)**.
+Two longer reads for wiring it into a real application stack:
+
+- **[Step-by-step setup](docs/step-by-step.md)** — a do-this-in-order tutorial (Kubernetes/kind):
+  configure users, deploy the emulator, point your backend/frontend/daemons at it, verify.
+- **[Integration guide](docs/integration-guide.md)** — the reference behind each step: the
+  identity model, in-cluster networking, the "emulated" environment, custom login screens.
 
 ---
 
