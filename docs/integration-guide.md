@@ -277,6 +277,10 @@ emulator can leak into a real deployment.
 
 ## 5. Pointing each tier at the emulator
 
+> For a **side-by-side before/after** of real-Azure vs emulator config across a backend, a
+> daemon and a frontend — plus a table of exactly which client id / audience maps to which
+> emulator setting — see [examples/config-mapping.md](../examples/config-mapping.md).
+
 ### Backend API (.NET / Microsoft.Identity.Web)
 
 In your `appsettings.DevelopmentEmulator.json`, point the authority at the **in-cluster** URL:

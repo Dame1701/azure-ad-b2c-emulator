@@ -55,9 +55,12 @@ snippets:
 | .NET API (Microsoft.Identity.Web) | [examples/microsoft-identity-web.md](examples/microsoft-identity-web.md) |
 | Frontend SPA (MSAL.js) | [examples/frontend-msal.md](examples/frontend-msal.md) |
 | Anything else (generic OIDC/JWT) | [examples/generic-oidc.md](examples/generic-oidc.md) |
+| **Before/after config + which id goes where** | [examples/config-mapping.md](examples/config-mapping.md) |
 
 The most common trap, for .NET specifically, is Microsoft.Identity.Web rejecting the
-emulator's issuer with `IDX40001` — the .NET guide shows the two-line fix.
+emulator's issuer with `IDX40001` — the .NET guide shows the two-line fix. If you're unsure
+which client id / audience maps to which emulator setting, start with the
+[config-mapping](examples/config-mapping.md) before/after walkthrough.
 
 For a full walkthrough of wiring the emulator into a real application stack — the identity
 model, running it in a Kubernetes/kind cluster, adding a dedicated "emulated" environment, and
