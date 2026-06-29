@@ -25,6 +25,8 @@ daemon client id into the emulator's config** so it knows what to issue and acce
 
 ```jsonc
 "Emulator": {
+  "PublicBaseUrl": "https://localhost:8080",              // the browser-facing URL (or set via
+                                                          //   Emulator__PublicBaseUrl env var)
   "Tenant":   "yourtenant.onmicrosoft.com",
   "TenantId": "11111111-1111-1111-1111-111111111111",
   "Apis": [
@@ -41,6 +43,41 @@ daemon client id into the emulator's config** so it knows what to issue and acce
   "Users": [ /* your users — object ids must match your store */ ]
 }
 ```
+
+---
+
+## The issuer — built from `PublicBaseUrl` + `TenantId`
+
+Every token's `iss` is **fixed** and built from two emulator settings:
+
+```
+{PublicBaseUrl}/{TenantId}/v2.0/
+```
+
+With this example's values (`PublicBaseUrl = https://localhost:8080`,
+`TenantId = 11111111-1111-1111-1111-111111111111`) the issuer is:
+
+```
+https://localhost:8080/11111111-1111-1111-1111-111111111111/v2.0/
+```
+
+That exact string is what your backend must accept as **`ValidIssuer`** (next section). The
+emulator's *discovery endpoints* adapt to whatever host the caller used, but the `iss` is always
+this fixed value — so it's the one thing every consumer must agree on.
+
+**To change it**, edit the emulator's `PublicBaseUrl` and/or `TenantId`, then update your
+backend's `ValidIssuer` to match **byte-for-byte** (scheme, host, port, the tenant GUID, and the
+trailing `/v2.0/`). For example, switching to tenant id `aaaa…` on port `9000`:
+
+```
+PublicBaseUrl = https://localhost:9000
+TenantId      = aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa
+⇒ issuer / ValidIssuer = https://localhost:9000/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/v2.0/
+```
+
+> Note `PublicBaseUrl` is the **browser-facing** URL (`https://localhost:8080`), even though
+> your pods reach the emulator on a different in-cluster host (`http://auth-emulator:8080`). The
+> issuer is always `PublicBaseUrl`; the authority your backend points at can differ.
 
 ---
 
@@ -63,7 +100,7 @@ daemon client id into the emulator's config** so it knows what to issue and acce
   "Domain":                "yourtenant.onmicrosoft.com",          //   unchanged
   "ClientId":              "22222222-2222-2222-2222-222222222222",//   unchanged
   "SignUpSignInPolicyId":  "B2C_1A_SIGNIN",                       //   unchanged
-  "ValidIssuer":           "http://localhost:8080/11111111-1111-1111-1111-111111111111/v2.0/",
+  "ValidIssuer":           "https://localhost:8080/11111111-1111-1111-1111-111111111111/v2.0/", // ← = the fixed issuer (PublicBaseUrl + TenantId), NOT the Instance above
   "RequireHttpsMetadata":  false                                  // ← the in-cluster authority is http
 }
 ```
@@ -140,7 +177,7 @@ from config on its own) — see [microsoft-identity-web.md](microsoft-identity-w
 | App ID URI + scope | the scope your SPA/daemon requests (`…/api/access_as_user`) | `Apis[].AppIdUri` + `Scopes[]` | **Yes** — the emulator matches a requested scope to an API by AppIdUri prefix |
 | Daemon `44444444…` | `…M2M:ClientId` | `Clients[].ClientId` | **Yes** — identifies the M2M caller |
 | SPA `33333333…` | frontend `auth.clientId` | *(not needed)* | No — the emulator echoes it as the `id_token` audience; it doesn't validate it |
-| Tenant id `11111111…` | (none directly) | `TenantId` | builds the fixed issuer; your backend's `ValidIssuer` must use the same value |
+| Tenant id `11111111…` | backend `ValidIssuer` (inside the issuer string) | `TenantId` (+ `PublicBaseUrl`) | **Yes** — together they form the fixed issuer `{PublicBaseUrl}/{TenantId}/v2.0/`, which `ValidIssuer` must equal exactly |
 | Policy `B2C_1A_SIGNIN` | the authority's policy path segment | the `{policy}` URL segment | any name works; a name containing `PASSWORDRESET` renders the reset screen |
 
 ### The short version

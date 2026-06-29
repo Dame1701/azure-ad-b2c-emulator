@@ -38,13 +38,17 @@ if (builder.Environment.IsDevelopment())
             o.RequireHttpsMetadata = false;
 
             // Accept the emulator's fixed issuer: {PublicBaseUrl}/{TenantId}/v2.0/
+            // Must equal the emulator's PublicBaseUrl + TenantId exactly (here PublicBaseUrl
+            // is https://localhost:8080 — use http only if that's how you set PublicBaseUrl).
             o.TokenValidationParameters.ValidIssuer =
-                "http://localhost:8080/11111111-1111-1111-1111-111111111111/v2.0/";
+                "https://localhost:8080/11111111-1111-1111-1111-111111111111/v2.0/";
         });
 }
 ```
 
-If the emulator's `PublicBaseUrl` or `TenantId` change, update `ValidIssuer` to match.
+If the emulator's `PublicBaseUrl` or `TenantId` change, update `ValidIssuer` to match
+byte-for-byte. See [config-mapping.md](config-mapping.md#the-issuer--built-from-publicbaseurl--tenantid)
+for how the issuer is constructed.
 
 ## Machine-to-machine (client_credentials)
 
