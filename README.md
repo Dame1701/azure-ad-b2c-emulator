@@ -22,7 +22,7 @@ known email. Never run it in production.
 - [Theming](#theming)
 - [How it works](#how-it-works)
 - [Limitations](#limitations)
-- [Run from source](#run-from-source)
+- [Build and run from source](#build-and-run-from-source)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -216,7 +216,15 @@ useful. Just don't mistake it for a conformance or security test of your Azure s
 
 ---
 
-## Run from source
+## Build and run from source
+
+> **This is a bare-bones implementation built around my own particular needs** — a local
+> stand-in for Azure AD B2C covering the flows one platform's dev workflow actually uses. It's
+> not an exhaustive or conformant B2C emulator (see [Limitations](#limitations)). The full
+> source is in this repository — **<https://github.com/Dame1701/azure-ad-b2c-emulator>** — so
+> you're encouraged to clone or fork it and adapt it to your own needs.
+
+### Run directly (.NET SDK)
 
 For hacking on the emulator itself:
 
@@ -226,11 +234,34 @@ dotnet run --project src/AzureAdB2cEmulator
 # https://localhost:7299 and http://localhost:5299
 ```
 
-Build the image locally:
+### Build your own local Docker image
+
+You don't need the published image — the repo is fully self-contained, and the multi-stage
+`Dockerfile` builds with the .NET SDK *inside* the build, so you only need Docker:
 
 ```bash
+git clone https://github.com/Dame1701/azure-ad-b2c-emulator
+cd azure-ad-b2c-emulator
 docker build -t azure-ad-b2c-emulator:dev .
+docker run --rm -p 8080:8080 -e Emulator__PublicBaseUrl=http://localhost:8080 \
+  azure-ad-b2c-emulator:dev
 ```
+
+This is the right path if you've **modified the source** (claims, branding logic, the login
+template, extra grants) and want to run your version.
+
+**Using your local build in a Kubernetes/kind cluster.** Tag your build with the **same image
+reference your deployment expects**, then load it onto the node — a local image of that ref is
+used instead of pulling the published one:
+
+```bash
+docker build -t ghcr.io/<owner>/azure-ad-b2c-emulator:<tag> .
+kind load docker-image ghcr.io/<owner>/azure-ad-b2c-emulator:<tag> -n <cluster>
+# with imagePullPolicy: IfNotPresent the loaded image is used; no registry push needed
+```
+
+So you can iterate on the emulator entirely locally and only push/publish an image when you
+actually want to share it.
 
 ---
 
